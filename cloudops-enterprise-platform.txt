@@ -1,0 +1,10 @@
+spring.application.name=leave-service
+spring.datasource.url=jdbc:postgresql://localhost:5433/cloudopsdb
+spring.datasource.username=cloudopsadmin
+spring.datasource.password=zl07xX0N_6*zprQG#g!$)F<|BjPn
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+server.port=8081
