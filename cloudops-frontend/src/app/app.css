@@ -1,0 +1,168 @@
+.container {
+width: 90%;
+max-width: 1200px;
+margin: 40px auto;
+font-family: Arial, sans-serif;
+}
+
+h1 {
+margin-bottom: 5px;
+}
+
+h2 {
+margin-bottom: 30px;
+color: #444;
+}
+
+.form-card {
+border: 1px solid #ddd;
+padding: 25px;
+margin-bottom: 35px;
+border-radius: 8px;
+background: #fafafa;
+}
+
+.form-card h3,
+.records h3 {
+margin-top: 0;
+}
+
+.form-group {
+display: flex;
+flex-direction: column;
+margin-bottom: 15px;
+}
+
+.form-group label {
+margin-bottom: 6px;
+font-weight: bold;
+}
+
+input,
+select {
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 4px;
+font-size: 14px;
+}
+
+input:focus,
+select:focus {
+outline: none;
+border-color: #555;
+}
+
+.date-row {
+display: flex;
+gap: 20px;
+}
+
+.date-row .form-group {
+flex: 1;
+}
+
+/* Buttons */
+
+button {
+padding: 10px 20px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-size: 14px;
+margin-right: 8px;
+}
+
+button:hover {
+opacity: 0.85;
+}
+
+/* Form buttons */
+
+.form-card button[type="submit"] {
+background: #222;
+color: white;
+}
+
+/* Cancel button */
+
+.form-card button[type="button"] {
+background: #777;
+color: white;
+}
+
+/* Records table */
+
+.records {
+overflow-x: auto;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+background: white;
+}
+
+th,
+td {
+border: 1px solid #ddd;
+padding: 12px;
+text-align: left;
+}
+
+th {
+background-color: #f2f2f2;
+font-weight: bold;
+}
+
+tr:hover {
+background-color: #fafafa;
+}
+
+/* Action buttons */
+
+td button {
+padding: 7px 12px;
+font-size: 13px;
+}
+
+td button:first-child {
+background: #444;
+color: white;
+}
+
+td button:last-child {
+background: #b00020;
+color: white;
+}
+
+/* Error message */
+
+.error {
+color: #b00020;
+font-weight: bold;
+margin-bottom: 20px;
+}
+
+/* Mobile responsiveness */
+
+@media (max-width: 768px) {
+
+.container {
+width: 95%;
+margin: 20px auto;
+}
+
+.date-row {
+flex-direction: column;
+gap: 0;
+}
+
+.form-card {
+padding: 18px;
+}
+
+table {
+min-width: 900px;
+}
+
+}
