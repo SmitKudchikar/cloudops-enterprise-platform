@@ -4,6 +4,7 @@ import com.cloudops.leave_service.entity.LeaveRequest;
 import com.cloudops.leave_service.repository.LeaveRequestRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,14 @@ public class LeaveRequestService {
     }
 
     public LeaveRequest createLeave(LeaveRequest leaveRequest) {
+
+        leaveRequest.setStatus("PENDING");
+        leaveRequest.setCreatedAt(LocalDateTime.now());
+
+        return leaveRequestRepository.save(leaveRequest);
+    }
+
+    public LeaveRequest updateLeave(LeaveRequest leaveRequest) {
         return leaveRequestRepository.save(leaveRequest);
     }
 

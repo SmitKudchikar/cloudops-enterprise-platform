@@ -32,6 +32,24 @@ public class LeaveRequestController {
         return leaveRequestService.createLeave(leaveRequest);
     }
 
+    @PutMapping("/{id}")
+public LeaveRequest updateLeave(
+        @PathVariable Integer id,
+        @RequestBody LeaveRequest leaveRequest) {
+
+    LeaveRequest existingLeave = leaveRequestService.getLeaveById(id)
+            .orElseThrow(() -> new RuntimeException("Leave request not found"));
+
+    existingLeave.setEmployeeId(leaveRequest.getEmployeeId());
+    existingLeave.setLeaveType(leaveRequest.getLeaveType());
+    existingLeave.setStartDate(leaveRequest.getStartDate());
+    existingLeave.setEndDate(leaveRequest.getEndDate());
+    existingLeave.setReason(leaveRequest.getReason());
+    existingLeave.setStatus(leaveRequest.getStatus());
+
+    return leaveRequestService.updateLeave(existingLeave);
+}
+
     @DeleteMapping("/{id}")
     public String deleteLeave(@PathVariable Integer id) {
         leaveRequestService.deleteLeave(id);
