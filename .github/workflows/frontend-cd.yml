@@ -1,0 +1,103 @@
+name: CloudOps Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cloudops-frontend/**"
+      - ".github/workflows/frontend-cd.yml"
+
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-south-1
+  AWS_ACCOUNT_ID: "206858212179"
+  ECR_REPOSITORY: cloudops-enterprise-platform/frontend
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build frontend Docker image
+        working-directory: cloudops-frontend
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+
+      - name: Push frontend Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker push \
+            $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+      - name: Deploy frontend to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            AWS_REGION="ap-south-1"
+            ECR_REGISTRY="206858212179.dkr.ecr.ap-south-1.amazonaws.com"
+            ECR_REPOSITORY="cloudops-enterprise-platform/frontend"
+            CONTAINER_NAME="cloudops-frontend"
+
+            echo "Logging in to Amazon ECR..."
+
+            aws ecr get-login-password --region $AWS_REGION | \
+              docker login \
+              --username AWS \
+              --password-stdin $ECR_REGISTRY
+
+            echo "Pulling latest frontend image..."
+
+            docker pull \
+              $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+            echo "Stopping existing frontend container..."
+
+            docker stop $CONTAINER_NAME || true
+
+            echo "Removing existing frontend container..."
+
+            docker rm $CONTAINER_NAME || true
+
+            echo "Starting new frontend container..."
+
+            docker run -d \
+              --name $CONTAINER_NAME \
+              -p 8082:80 \
+              $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+            echo "Frontend deployment completed."
+
+            echo "Running containers:"
+
+            docker ps
